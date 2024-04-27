@@ -26,7 +26,7 @@ app.get("/posts", async (req, res) => {
         const { rows } = await pool.query(query)
         res.json(rows)
     } catch (error) {
-        console.log("hay un error", error.message)
+        console.log("hay un errer", error.message)
     }
 })
 app.post("/posts", async (req, res) => {
@@ -43,6 +43,31 @@ app.post("/posts", async (req, res) => {
         const values = [id, titulo, url, descripcion, 0]
         const { rows } = await pool.query(query, values)
         res.json("post creado con exito")
+    } catch (error) {
+        console.log("hay un error", error.message)
+    }
+})
+
+app.put("/posts/like/:id", async (req, res) => {
+    try {
+        const {id} = req.params;
+        const query = "UPDATE posts SET likes = COALESCE(likes, 0) +1 WHERE id = $1";
+        const values = [id]
+        const { rows } = await pool.query(query, values)
+        res.json("post actualizado con exito")
+    } catch (error) {
+        console.log("hay un error", error.message)
+    }
+
+})
+
+app.delete("/posts/:id", async (req, res) => {
+    try {
+        const postId = req.params.id;
+        const query = "DELETE FROM posts WHERE id = $1"
+        const values = [postId]
+        const { rows } = await pool.query(query, values)
+        res.json("post eliminado con exito")
     } catch (error) {
         console.log("hay un error", error.message)
     }
